@@ -2,6 +2,11 @@
 
 configuration for neovim nightly build (hence the name).
 
+to install neovim nightly on macOS run:
+```sh
+$ brew install neovim --HEAD
+```
+
 focuses on:
 - nvim-lsp integration
 - optimized startup time
