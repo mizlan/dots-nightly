@@ -1,4 +1,4 @@
-call plug#begin($XDG_CONFIG_HOME . '/nvim-nightly/vim-plug')
+call plug#begin($XDG_DATA_HOME . '/nvim-nightly/vim-plug')
 
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
@@ -13,7 +13,7 @@ call plug#end()
 
 set ts=2 sts=2 sw=2 et list lcs=tab:┆·,trail:·,precedes:,extends:
 set hid nowrap spr sb ic scs nu rnu tgc nosmd swb=useopen scl=yes nosc noru icm=split
-set udir=$XDG_CONFIG_HOME/nvim/undodir udf
+set udir=$XDG_DATA_HOME/nvim/undodir udf
 set cot=menuone,noinsert,noselect shm+=c
 set bg=dark
 let &stl = " %f %m"
