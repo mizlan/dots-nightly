@@ -27,14 +27,17 @@ let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
 command! Format execute 'lua vim.lsp.buf.formatting()'
 
 :lua << EOF
-  local lsp = require('nvim_lsp')
+  local nvim_lsp = require('nvim_lsp')
   local on_attach = function(_, bufnr)
     require('diagnostic').on_attach()
     require('completion').on_attach()
   end
-  lsp.pyls_ms.setup{ on_attach = on_attach }
-  lsp.vimls.setup{ on_attach = on_attach }
-  lsp.clangd.setup{ on_attach = on_attach }
+  local servers = {'jsonls', 'pyls_ms', 'vimls', 'clangd'}
+  for _, lsp in ipairs(servers) do
+    nvim_lsp[lsp].setup {
+      on_attach = on_attach,
+    }
+  end
 EOF
 
 let mapleader = " "
