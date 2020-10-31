@@ -10,6 +10,7 @@ Plug 'tpope/vim-commentary'
 Plug 'lifepillar/gruvbox8'
 Plug 'sainnhe/edge'
 Plug 'tweekmonster/startuptime.vim'
+Plug 'mizlan/termbufm'
 
 call plug#end()
 
@@ -23,44 +24,24 @@ let g:gruvbox_italicize_strings = 0
 let g:edge_style = 'neon'
 colo edge
 
-let g:mode_dict = { 'n': '', 'no': '', 'nov': '', 'noV': '', "no\<C-v>": '', 'niI': '', 'niR': '', 'niV': '', 'v': '',
-      \ 'V': '', "\<C-v>": '', 's': '', 'S': '', "\<C-s>": '', 'i': '', 'ic': '', 'ix': '', 'R': 'ﰉ', 'Rc': 'ﰉ', 'Rv': 'ﰉ',
-      \ 'Rx': 'ﰉ', 'c': 'ﱕ', 'cv': 'ﱕ', 'ce': 'ﱕ', 'r': '', 'rm': '', 'r?': '', '!': '', 't': '', 'unknown': '', }
-function AStl()
-  let l:m = get(g:mode_dict, mode(1), g:mode_dict.unknown)
-  let l:t = &ft ==# '' ? '' : &ft
-  let l:c = &mod ? ' ' : ''
-  let l:f = expand('%:t') | let l:f = l:f ==# '' ? '' : l:f
-  if luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
-    let l:d =' %{luaeval("vim.lsp.util.buf_diagnostics_count([[Error]])")} '
-    let l:d.=' %{luaeval("vim.lsp.util.buf_diagnostics_count([[Warning]])")}'
-  else
-    let l:d = ''
-  endif
-  let l:x = '%#Normal# %#Directory#%#Search#'.l:m.'%#Directory# %#MoreMsg#%#IncSearch#'.l:f.l:c.'%#MoreMsg#%#Normal#%=%#Red#%#debugBreakpoint#'.l:d.'%#Red# %#Title#%#TablineSel#'.l:t.'%#Title#%#Normal# '
-  return l:x
-endfunction
-
-function IStl()
-  let l:m = get(g:mode_dict, mode(1), g:mode_dict.unknown)
-  let l:t = &ft ==# '' ? '' : &ft
-  let l:c = &mod ? ' ' : ''
-  let l:f = expand('%:t') | let l:f = l:f ==# '' ? '' : l:f
-  if luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
-    let l:d =' %{luaeval("vim.lsp.util.buf_diagnostics_count([[Error]])")} '
-    let l:d.=' %{luaeval("vim.lsp.util.buf_diagnostics_count([[Warning]])")}'
-  else
-    let l:d = ''
-  endif
-  let l:x = '%#Normal# %#VertSplit#%#MatchParen#'.l:m.'%#VertSplit# %#VertSplit#%#MatchParen#'.l:f.l:c.'%#VertSplit#%#VertSplit#%=%#VertSplit#%#MatchParen#'.l:d.'%#VertSplit# %#VertSplit#%#MatchParen#'.l:t.'%#VertSplit#%#VertSplit# '
-  return l:x
-endfunction
-
-aug St
-  au!
-  au VimEnter,WinEnter,BufEnter * setl stl=%!AStl()
-  au VimLeave,WinLeave,BufLeave * setl statusline=%!IStl()
-aug END
+let g:terminal_color_0="#363a4e"
+let g:terminal_color_8="#363a4e"
+let g:terminal_color_1="#ec7279"
+let g:terminal_color_9="#ec7279"
+let g:terminal_color_2="#a0c980"
+let g:terminal_color_10="#a0c980"
+let g:terminal_color_3="#deb974"
+let g:terminal_color_11="#deb974"
+let g:terminal_color_4="#6cb6eb"
+let g:terminal_color_12="#6cb6eb"
+let g:terminal_color_5="#d38aea"
+let g:terminal_color_13="#d38aea"
+let g:terminal_color_6="#5dbbc1"
+let g:terminal_color_14="#5dbbc1"
+let g:terminal_color_7="#c5cdd9"
+let g:terminal_color_15="#c5cdd9"
+let g:terminal_color_background="#2b2d3a"
+let g:terminal_color_foreground="#c5cdd9"
 
 let g:diagnostic_virtual_text_prefix = ''
 let g:diagnostic_enable_virtual_text = 1
@@ -78,10 +59,10 @@ let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>xD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>xr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>e', '<cmd>lua vim.lsp.util.show_line_diagnostics()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>xd', '<cmd>lua vim.lsp.util.show_line_diagnostics()<CR>', opts)
   end
   local servers = {'jsonls', 'pyls_ms', 'vimls', 'clangd', 'tsserver', 'cssls', 'html'}
   for _, lsp in ipairs(servers) do
@@ -105,7 +86,15 @@ command! Format execute 'lua vim.lsp.buf.formatting()'
   }
 EOF
 
+" au BufNewFile,BufReadPost *.md set filetype=markdown
+let g:markdown_fenced_languages = ['sh', 'vim']
+
 let mapleader = " "
 nn <silent> <leader>n :noh<CR>
 tno <silent> <Esc> <C-\><C-n>
 command! Cp :0r /Users/michaellan/code/cp/xstemp.cpp
+nn <silent> <leader>b :call TermBufMExecCodeScript(&filetype, 'build')<CR>
+nn <silent> <leader>r :call TermBufMExecCodeScript(&filetype, 'run')<CR>
+
+let $V='$XDG_CONFIG_HOME/nvim-nightly'
+so $V/xstl.vim
