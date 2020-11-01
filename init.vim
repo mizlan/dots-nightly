@@ -7,10 +7,10 @@ Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'honza/vim-snippets'
 Plug '9mm/vim-closer'
 Plug 'tpope/vim-commentary'
-Plug 'lifepillar/gruvbox8'
 Plug 'sainnhe/edge'
 Plug 'tweekmonster/startuptime.vim'
 Plug 'mizlan/termbufm'
+Plug 'mhinz/vim-signify'
 
 call plug#end()
 
@@ -19,29 +19,33 @@ set hid nowrap spr sb ic scs nu rnu tgc nosmd swb=useopen scl=yes nosc noru icm=
 set udir=$XDG_DATA_HOME/nvim/undodir udf
 set cot=menuone,noinsert,noselect shm+=c
 set bg=dark
-let &stl = ' %f %m%=%y '
-let g:gruvbox_italicize_strings = 0
 let g:edge_style = 'neon'
 colo edge
 
-let g:terminal_color_0="#363a4e"
-let g:terminal_color_8="#363a4e"
-let g:terminal_color_1="#ec7279"
-let g:terminal_color_9="#ec7279"
-let g:terminal_color_2="#a0c980"
-let g:terminal_color_10="#a0c980"
-let g:terminal_color_3="#deb974"
-let g:terminal_color_11="#deb974"
-let g:terminal_color_4="#6cb6eb"
-let g:terminal_color_12="#6cb6eb"
-let g:terminal_color_5="#d38aea"
-let g:terminal_color_13="#d38aea"
-let g:terminal_color_6="#5dbbc1"
-let g:terminal_color_14="#5dbbc1"
-let g:terminal_color_7="#c5cdd9"
-let g:terminal_color_15="#c5cdd9"
-let g:terminal_color_background="#2b2d3a"
-let g:terminal_color_foreground="#c5cdd9"
+let g:terminal_color_0 = "#363a4e"
+let g:terminal_color_8 = "#363a4e"
+let g:terminal_color_1 = "#ec7279"
+let g:terminal_color_9 = "#ec7279"
+let g:terminal_color_2 = "#a0c980"
+let g:terminal_color_10 = "#a0c980"
+let g:terminal_color_3 = "#deb974"
+let g:terminal_color_11 = "#deb974"
+let g:terminal_color_4 = "#6cb6eb"
+let g:terminal_color_12 = "#6cb6eb"
+let g:terminal_color_5 = "#d38aea"
+let g:terminal_color_13 = "#d38aea"
+let g:terminal_color_6 = "#5dbbc1"
+let g:terminal_color_14 = "#5dbbc1"
+let g:terminal_color_7 = "#c5cdd9"
+let g:terminal_color_15 = "#c5cdd9"
+let g:terminal_color_background = "#2b2d3a"
+let g:terminal_color_foreground = "#c5cdd9"
+
+
+let g:signify_sign_add = '▎'
+let g:signify_sign_delete = '▎'
+let g:signify_sign_delete_first_line = '▎'
+let g:signify_sign_change = '▎'
 
 let g:diagnostic_virtual_text_prefix = ''
 let g:diagnostic_enable_virtual_text = 1
@@ -92,9 +96,20 @@ let g:markdown_fenced_languages = ['sh', 'vim']
 let mapleader = " "
 nn <silent> <leader>n :noh<CR>
 tno <silent> <Esc> <C-\><C-n>
-command! Cp :0r /Users/michaellan/code/cp/xstemp.cpp
+
+com! Cp :0r /Users/michaellan/code/cp/xstemp.cpp
+au FileType cpp ia <buffer> itn int
+
 nn <silent> <leader>b :call TermBufMExecCodeScript(&filetype, 'build')<CR>
 nn <silent> <leader>r :call TermBufMExecCodeScript(&filetype, 'run')<CR>
+nn <silent> <leader>f :call TermBufMExec('pbpaste > input')<CR>
 
 let $V='$XDG_CONFIG_HOME/nvim-nightly'
 so $V/xstl.vim
+
+let g:termbufm_code_scripts = {
+      \ 'python': { 'build': [''],                                     'run': ['cat input | python %s', '%'] },
+      \ 'cpp':    { 'build': ['g++ -std=c++11 -DFEAST_LOCAL %s', '%'], 'run': ['cat input | ./a.out'] },
+      \ 'java':   { 'build': ['javac %s', '%'],                        'run': ['cat input | java %s', '%:r'] },
+      \ 'c':      { 'build': ['gcc %s', '%'],                          'run': ['cat input | ./a.out'] },
+      \ }
