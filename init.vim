@@ -1,4 +1,4 @@
-call plug#begin($HOME . '/.config/xxxnvim/vim-plug')
+call plug#begin(stdpath('data') . '/vim-plug')
 
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
@@ -17,13 +17,13 @@ call plug#end()
 
 set ts=2 sts=2 sw=2 et list lcs=tab:┆·,trail:·,precedes:,extends:
 set hid nowrap spr sb ic scs nu rnu tgc nosmd swb=useopen scl=yes nosc noru icm=split
-set udir=$XDG_DATA_HOME/nvim/undodir udf
+set udir=~/.local/share/nvim/undodir udf
 set cot=menuone,noinsert,noselect shm+=c
 set bg=dark
 let g:edge_style = 'neon'
 colo edge
 
-let $V=$HOME .'/.config/xxxnvim'
+let $V=stdpath('config')
 so $V/xstl.vim
 so $V/aesth.vim
 
@@ -80,9 +80,6 @@ let mapleader = " "
 nn <silent> <leader>n :noh<CR>
 tno <silent> <Esc> <C-\><C-n>
 
-com! Cp :0r /Users/michaellan/code/cp/xstemp.cpp
-au FileType cpp ia <buffer> itn int
-
 nn <silent> <leader>b :call TermBufMExecCodeScript(&filetype, 'build')<CR>
 nn <silent> <leader>r :call TermBufMExecCodeScript(&filetype, 'run')<CR>
 nn <silent> <leader>f :call TermBufMExec('pbpaste > input')<CR>
@@ -90,7 +87,7 @@ nn <silent> <leader><space> :call TermBufMToggle()<CR>
 
 let g:termbufm_code_scripts = {
       \ 'python': { 'build': [''],                                     'run': ['cat input | python %s', '%'] },
-      \ 'cpp':    { 'build': ['g++ -std=c++11 -DFEAST_LOCAL %s', '%'], 'run': ['cat input | ./a.out'] },
+      \ 'cpp':    { 'build': ['g++ -std=c++11 %s', '%'],               'run': ['cat input | ./a.out'] },
       \ 'java':   { 'build': ['javac %s', '%'],                        'run': ['cat input | java %s', '%:r'] },
       \ 'c':      { 'build': ['gcc %s', '%'],                          'run': ['cat input | ./a.out'] },
       \ }
