@@ -1,4 +1,4 @@
-call plug#begin($XDG_DATA_HOME . '/nvim-nightly/vim-plug')
+call plug#begin($HOME . '/.config/xxxnvim/vim-plug')
 
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
@@ -11,6 +11,7 @@ Plug 'sainnhe/edge'
 Plug 'tweekmonster/startuptime.vim'
 Plug 'mizlan/termbufm'
 Plug 'mhinz/vim-signify'
+Plug 'SirVer/ultisnips'
 
 call plug#end()
 
@@ -22,38 +23,21 @@ set bg=dark
 let g:edge_style = 'neon'
 colo edge
 
-let g:terminal_color_0 = "#363a4e"
-let g:terminal_color_8 = "#363a4e"
-let g:terminal_color_1 = "#ec7279"
-let g:terminal_color_9 = "#ec7279"
-let g:terminal_color_2 = "#a0c980"
-let g:terminal_color_10 = "#a0c980"
-let g:terminal_color_3 = "#deb974"
-let g:terminal_color_11 = "#deb974"
-let g:terminal_color_4 = "#6cb6eb"
-let g:terminal_color_12 = "#6cb6eb"
-let g:terminal_color_5 = "#d38aea"
-let g:terminal_color_13 = "#d38aea"
-let g:terminal_color_6 = "#5dbbc1"
-let g:terminal_color_14 = "#5dbbc1"
-let g:terminal_color_7 = "#c5cdd9"
-let g:terminal_color_15 = "#c5cdd9"
-let g:terminal_color_background = "#2b2d3a"
-let g:terminal_color_foreground = "#c5cdd9"
-
-
-let g:signify_sign_add = '▎'
-let g:signify_sign_delete = '▎'
-let g:signify_sign_delete_first_line = '▎'
-let g:signify_sign_change = '▎'
+let $V=$HOME .'/.config/xxxnvim'
+so $V/xstl.vim
+so $V/aesth.vim
 
 let g:diagnostic_virtual_text_prefix = ''
 let g:diagnostic_enable_virtual_text = 1
+
 let g:completion_confirm_key = "\<C-y>"
 let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
+let g:completion_enable_snippet = 'UltiSnips'
+let g:completion_matching_smart_case = 1
+let g:completion_trigger_on_delete = 1
 
 :lua << EOF
-  local nvim_lsp = require('nvim_lsp')
+  local nvim_lsp = require('lspconfig')
   local on_attach = function(_, bufnr)
     require('diagnostic').on_attach()
     require('completion').on_attach()
@@ -68,7 +52,7 @@ let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>xd', '<cmd>lua vim.lsp.util.show_line_diagnostics()<CR>', opts)
   end
-  local servers = {'jsonls', 'pyls_ms', 'vimls', 'clangd', 'tsserver', 'cssls', 'html'}
+  local servers = {'jsonls', 'pyls_ms', 'vimls', 'clangd', 'tsserver', 'cssls', 'html', 'jdtls', 'sumneko_lua'}
   for _, lsp in ipairs(servers) do
     nvim_lsp[lsp].setup {
       on_attach = on_attach,
@@ -90,7 +74,6 @@ command! Format execute 'lua vim.lsp.buf.formatting()'
   }
 EOF
 
-" au BufNewFile,BufReadPost *.md set filetype=markdown
 let g:markdown_fenced_languages = ['sh', 'vim']
 
 let mapleader = " "
@@ -103,9 +86,7 @@ au FileType cpp ia <buffer> itn int
 nn <silent> <leader>b :call TermBufMExecCodeScript(&filetype, 'build')<CR>
 nn <silent> <leader>r :call TermBufMExecCodeScript(&filetype, 'run')<CR>
 nn <silent> <leader>f :call TermBufMExec('pbpaste > input')<CR>
-
-let $V='$XDG_CONFIG_HOME/nvim-nightly'
-so $V/xstl.vim
+nn <silent> <leader><space> :call TermBufMToggle()<CR>
 
 let g:termbufm_code_scripts = {
       \ 'python': { 'build': [''],                                     'run': ['cat input | python %s', '%'] },
@@ -113,3 +94,6 @@ let g:termbufm_code_scripts = {
       \ 'java':   { 'build': ['javac %s', '%'],                        'run': ['cat input | java %s', '%:r'] },
       \ 'c':      { 'build': ['gcc %s', '%'],                          'run': ['cat input | ./a.out'] },
       \ }
+
+nn <silent> <leader>j :NextDiagnosticCycle<CR>
+nn <silent> <leader>k :PrevDiagnosticCycle<CR>
