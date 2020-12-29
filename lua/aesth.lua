@@ -1,0 +1,8 @@
+-- vim.cmd('hi clear LspDiagnosticsDefaultError')
+-- vim.cmd('hi clear LspDiagnosticsDefaultWarning')
+-- vim.cmd('hi clear LspDiagnosticsDefaultHint')
+-- vim.cmd('hi clear LspDiagnosticsDefaultInformation')
+-- vim.cmd('hi link LspDiagnosticsDefaultError DiffDelete')
+-- vim.cmd('hi link LspDiagnosticsDefaultWarning DiffChange')
+-- vim.cmd('hi link LspDiagnosticsDefaultHint DiffAdd')
+-- vim.cmd('hi link LspDiagnosticsDefaultInformation DiffText')
