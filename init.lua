@@ -1,27 +1,14 @@
-vim.g.yui_comments = 'fade'
-vim.g.yui_visual = 'dark'
-
 require 'plugins'
 require 'conf'
 
-vim.cmd([[
-augroup Color
-  autocmd ColorScheme * hi clear SignColumn 
-augroup END
-]])
+-- autocommands to hijack color schemes
+require('hijackc')
 
-vim.cmd('colo zenburn')
+mapk = vim.api.nvim_set_keymap
 
--- require 'aesth'
-
--- vim.cmd('hi clear LspDiagnosticsDefaultError')
--- vim.cmd('hi clear LspDiagnosticsDefaultWarning')
--- vim.cmd('hi clear LspDiagnosticsDefaultHint')
--- vim.cmd('hi clear LspDiagnosticsDefaultInformation')
--- vim.cmd('hi link LspDiagnosticsDefaultError DiffDelete')
--- vim.cmd('hi link LspDiagnosticsDefaultWarning DiffChange')
--- vim.cmd('hi link LspDiagnosticsDefaultHint Folded')
--- vim.cmd('hi link LspDiagnosticsDefaultInformation DiffText')
+vim.g.yui_comments = 'fade'
+vim.g.yui_visual = 'dark'
+vim.cmd 'colo nord'
 
 vim.o.guicursor = ''
 vim.o.showmode = false
@@ -33,21 +20,36 @@ vim.o.hidden = true
 
 local opts = {noremap = true, silent = true}
 
-vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', opts)
-vim.api.nvim_set_keymap('n', '[e', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-vim.api.nvim_set_keymap('n', ']e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-vim.cmd('au FileType fzf tno <Esc> <C-c>')
+mapk('t', '<Esc>', '<C-\\><C-n>', opts)
+mapk('n', '[e', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+mapk('n', ']e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+
+vim.cmd 'au FileType fzf tno <Esc> <C-c>'
 
 vim.o.stl = ' %f %m%=%y '
 vim.wo.wrap = false
 
 vim.o.background = 'dark'
-vim.o.t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"
-vim.o.t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"
+-- vim.o.t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"
+-- vim.o.t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"
 vim.o.termguicolors = true
 
-vim.cmd('let g:sneak#label = 1')
+vim.cmd 'let g:sneak#label = 1'
 
-vim.api.nvim_command([[command! Cdir execute 'lcd %:p:h']])
-vim.api.nvim_command('command! TSRehighlight :write | edit | TSBufEnable highlight')
-vim.cmd('au FileType cpp ia <buffer> itn int')
+vim.cmd [[command! Cdir execute 'lcd %:p:h']]
+vim.cmd 'command! TSRehighlight :write | edit | TSBufEnable highlight'
+vim.cmd 'command! Sync PackerSync'
+vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
+
+-- google search from vim
+-- require 'gsearch'
+
+mapk('n', 'j', 'gj', opts)
+mapk('n', 'k', 'gk', opts)
+
+vim.cmd 'autocmd FileType markdown set wrap linebreak'
+
+vim.cmd 'command! Template r ~/code/cp/xstemp.cpp'
+
+-- development tools
+-- require('dev')

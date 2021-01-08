@@ -11,6 +11,8 @@ return require('packer').startup(
     use 'junegunn/seoul256.vim'
     use 'jnurmine/Zenburn'
     use 'co1ncidence/sunset.vim'
+    use 'olivertaylor/vacme'
+    use 'arcticicestudio/nord-vim'
 
     use 'liuchengxu/vim-clap'
     use 'junegunn/fzf'
@@ -20,12 +22,12 @@ return require('packer').startup(
     use 'machakann/vim-sandwich'
     use '9mm/vim-closer'
     use 'romainl/vim-cool'
-    use 'justinmk/vim-sneak'
 
     use 'axvr/org.vim'
 
     use 'MaxMEllon/vim-jsx-pretty'
-    use {'prettier/vim-prettier', run = 'yarn install'}
+    use {'prettier/vim-prettier', run = 'yarn install', cmd = 'Prettier'}
+    use 'dag/vim-fish'
 
     use 'nvim-treesitter/nvim-treesitter'
     use 'nvim-treesitter/nvim-treesitter-textobjects'
@@ -42,5 +44,6 @@ return require('packer').startup(
 
     use {'RRethy/vim-hexokinase', run = 'make hexokinase'}
     use 'lifepillar/vim-colortemplate'
+    use 'bfredl/nvim-luadev'
   end
 )
