@@ -3,6 +3,8 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   vim.api.nvim_command('!git clone https://github.com/wbthomason/packer.nvim '..install_path)
 end
 
+local use = require('packer').use
+
 return require('packer').startup(
   function()
     use 'wbthomason/packer.nvim'

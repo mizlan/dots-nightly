@@ -21,8 +21,6 @@ vim.o.hidden = true
 local opts = {noremap = true, silent = true}
 
 mapk('t', '<Esc>', '<C-\\><C-n>', opts)
-mapk('n', '[e', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-mapk('n', ']e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
 
 vim.cmd 'au FileType fzf tno <Esc> <C-c>'
 
@@ -52,4 +50,4 @@ vim.cmd 'autocmd FileType markdown set wrap linebreak'
 vim.cmd 'command! Template r ~/code/cp/xstemp.cpp'
 
 -- development tools
--- require('dev')
+require('dev')
