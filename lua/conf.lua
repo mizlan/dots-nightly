@@ -1,10 +1,13 @@
-lspconf = require('lspconfig')
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+lsp = require('lspconfig')
 
 function root_pattern_prefer(...)
   local patterns = vim.tbl_flatten {...}
   return function(startpath)
     for _, pattern in ipairs(patterns) do
-      path = lspconf.util.root_pattern(pattern)(startpath)
+      local path = lsp.util.root_pattern(pattern)(startpath)
       if path then return path end
     end
   end
@@ -31,18 +34,22 @@ end
 
 vim.api.nvim_command([[command! Format execute 'lua vim.lsp.buf.formatting()']])
 
-local servers = {'jsonls', 'clangd', 'cssls', 'html', 'jdtls', 'pyright', 'ocamllsp', 'hls'}
+local servers = {'jsonls', 'clangd', 'cssls', 'html', 'jdtls', 'pyright', 'ocamllsp'}
 
 for _, server in ipairs(servers) do
-  lspconf[server].setup {
+  lsp[server].setup {
     on_attach = on_attach,
   }
 end
 
-lspconf.tsserver.setup {
+lsp.tsserver.setup {
   on_attach = on_attach,
   root_dir = root_pattern_prefer("tsconfig.json", "package.json", ".git")
 }
+
+-- lsp.hls.setup {
+--   on_attach = on_attach,
+-- }
 
 local system_name
 if vim.fn.has("mac") == 1 then
@@ -58,7 +65,7 @@ end
 local sumneko_root_path = '/Users/michaellan/util/lua-language-server/'
 local sumneko_binary = sumneko_root_path.."/bin/"..system_name.."/lua-language-server"
 
-lspconf.sumneko_lua.setup {
+lsp.sumneko_lua.setup {
   cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"};
   on_attach = on_attach,
   settings = {
@@ -106,6 +113,21 @@ vim.api.nvim_buf_set_keymap(0, 'x', 'am', '<Plug>(textobj-sandwich-literal-query
 vim.api.nvim_buf_set_keymap(0, 'o', 'im', '<Plug>(textobj-sandwich-literal-query-i)', opts)
 vim.api.nvim_buf_set_keymap(0, 'o', 'am', '<Plug>(textobj-sandwich-literal-query-a)', opts)
 
+
+local actions = require('telescope.actions')
+require('telescope').setup{
+  defaults = {
+    mappings = {
+      i = {
+        ["<esc>"] = actions.close
+      },
+    },
+  }
+}
+
+vim.api.nvim_buf_set_keymap(0, 'n', 'gs', [[<cmd>lua require('telescope.builtin').spell_suggest()<CR>]], opts)
+vim.api.nvim_buf_set_keymap(0, 'n', 'go', [[<cmd>lua require('telescope.builtin').oldfiles()<CR>]], opts)
+
 vim.g.completion_enable_snippet = 'UltiSnips'
 vim.g.completion_confirm_key = '<C-y>'
 vim.g.completion_matching_strategy_list = {'exact', 'substring', 'fuzzy'}
@@ -122,3 +144,16 @@ vim.g.signify_sign_delete            = '│'
 vim.g.signify_sign_delete_first_line = '│'
 vim.g.signify_sign_change            = '│'
 
+vim.g.haskell_indent_disable = 1
+
+-- turn on quickscope for most text, but not on startup
+vim.g.qs_enable = 0
+vim.g.qs_max_chars = 10000
+
+-- don't highlight based on color name
+vim.g.Hexokinase_optInPatterns = 'full_hex,rgb,rgba,hsl,hsla'
+
+vim.cmd [[ 
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+]]
