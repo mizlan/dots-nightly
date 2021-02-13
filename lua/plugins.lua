@@ -11,41 +11,34 @@ return require('packer').startup(
 
     use {'cideM/yui', branch = 'v2'} -- dark visual selection
     use 'junegunn/seoul256.vim'
-    use 'jnurmine/Zenburn'
-    use 'co1ncidence/sunset.vim'
-    use 'olivertaylor/vacme'
-    use 'arcticicestudio/nord-vim'
-
-    use 'liuchengxu/vim-clap'
-    use 'junegunn/fzf'
-    use 'junegunn/fzf.vim'
+    use 'lifepillar/vim-gruvbox8'
+    use 'neovimhaskell/haskell-vim'
 
     use 'tpope/vim-commentary'
     use 'machakann/vim-sandwich'
     use '9mm/vim-closer'
     use 'romainl/vim-cool'
 
-    use 'axvr/org.vim'
+    use 'junegunn/vim-easy-align'
 
-    use 'MaxMEllon/vim-jsx-pretty'
-    use {'prettier/vim-prettier', run = 'yarn install', cmd = 'Prettier'}
     use 'dag/vim-fish'
 
     use 'nvim-treesitter/nvim-treesitter'
     use 'nvim-treesitter/nvim-treesitter-textobjects'
 
+    use {
+      'nvim-telescope/telescope.nvim',
+      requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
+    }
+
     use 'neovim/nvim-lspconfig'
     use 'nvim-lua/completion-nvim'
 
-    use 'SirVer/ultisnips'
-    use 'honza/vim-snippets'
-
     use 'editorconfig/editorconfig-vim'
     use 'mhinz/vim-signify'
-    use 'tpope/vim-fugitive'
 
-    use {'RRethy/vim-hexokinase', run = 'make hexokinase'}
-    use 'lifepillar/vim-colortemplate'
+    use {'RRethy/vim-hexokinase', run = 'make hexokinase', cmd = 'HexokinaseToggle'}
+
     use 'bfredl/nvim-luadev'
   end
 )
