@@ -2,13 +2,13 @@ require 'plugins'
 require 'conf'
 
 -- autocommands to hijack color schemes
-require('hijackc')
+-- require('hijackc')
 
 mapk = vim.api.nvim_set_keymap
 
 vim.g.yui_comments = 'fade'
 vim.g.yui_visual = 'dark'
-vim.cmd 'colo nord'
+vim.cmd 'colo gruvbox8_soft'
 
 vim.o.guicursor = ''
 vim.o.showmode = false
@@ -52,7 +52,15 @@ vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
 mapk('n', 'j', 'gj', opts)
 mapk('n', 'k', 'gk', opts)
 
-vim.cmd 'autocmd FileType markdown set wrap linebreak'
+mapk('n', 'Q', 'ZQ', opts)
+
+-- change inside include
+-- mapk('o', 'ii', '<Esc>0f>ci>', opts)
+vim.cmd 'au FileType cpp omap ii <Esc>0f>ci>'
+vim.cmd 'au FileType cpp ia <buffer> itn int'
+
+-- options for working on a markdown file
+vim.cmd 'autocmd FileType markdown setlocal wrap linebreak spell'
 
 vim.cmd 'command! Template r ~/code/cp/xstemp.cpp'
 
