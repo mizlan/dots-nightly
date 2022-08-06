@@ -63,7 +63,7 @@ vim.cmd [[colorscheme catppuccin]]
 vim.cmd [[set ts=2 sw=2 sts=2 et]]
 
 require('lualine').setup{
-  options = { theme = 'tokyonight' }
+  options = { theme = 'catppuccin' }
 }
 require('Comment').setup()
 require('colorizer').setup {
