@@ -3,7 +3,7 @@ P = require('neopm')
 P 'nvim-lua/plenary.nvim'
 P 'https://github.com/romainl/Apprentice'
 P 'https://github.com/nvim-lualine/lualine.nvim'
-P 'https://github.com/vale1410/vim-minizinc'
+-- P 'https://github.com/vale1410/vim-minizinc'
 P 'https://github.com/numToStr/Comment.nvim'
 P 'https://github.com/tpope/vim-surround'
 P 'norcalli/nvim-colorizer.lua'
@@ -34,7 +34,7 @@ require('hop').setup{}
 
 vim.opt.termguicolors = true
 vim.opt.background = 'dark'
-vim.g.catppuccin_flavour = "mocha" -- latte, frappe, macchiato, mocha
+vim.g.catppuccin_flavour = "macchiato" -- latte, frappe, macchiato, mocha
 require("catppuccin").setup{
   integrations = {
     native_lsp = {
@@ -157,6 +157,7 @@ require('leap').set_default_keymaps()
 
 require('neogit').setup{
   disable_commit_confirmation = true,
+  disable_insert_on_commit = false,
   use_magit_keybindings = true,
   signs = {
     -- { CLOSED, OPENED }
