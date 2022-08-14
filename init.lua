@@ -143,7 +143,20 @@ require('lspconfig')['pyright'].setup {
   cmd = { "pyright-langserver", "--stdio", "-v", "/Users/ml/GlobalVenv" }
 }
 require('lspconfig')['hls'].setup {
-  on_attach = on_attach,
+  on_attach = function(client, bufnr)
+    on_attach(client, bufnr)
+    if client.server_capabilities.codeLensProvider ~= false then
+      vim.keymap.set('n', '<leader>cll', vim.lsp.codelens.run, { buffer = bufnr })
+      vim.keymap.set('n', '<leader>clr', vim.lsp.codelens.refresh, { buffer = bufnr})
+      vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI', 'InsertLeave' }, {
+        group = vim.api.nvim_create_augroup('haskell-codelens', {}),
+        pattern = { '*.hs' },
+        callback = function()
+          vim.lsp.codelens.refresh()
+        end,
+      })
+    end
+  end,
 }
 require('lspconfig')['sumneko_lua'].setup(require("lua-dev").setup {
   lspconfig = {
