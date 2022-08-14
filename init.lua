@@ -3,7 +3,7 @@ P = require('neopm')
 P 'nvim-lua/plenary.nvim'
 P 'https://github.com/romainl/Apprentice'
 P 'https://github.com/nvim-lualine/lualine.nvim'
--- P 'https://github.com/vale1410/vim-minizinc'
+P 'https://github.com/vale1410/vim-minizinc'
 P 'https://github.com/numToStr/Comment.nvim'
 P 'https://github.com/tpope/vim-surround'
 P 'norcalli/nvim-colorizer.lua'
@@ -13,11 +13,11 @@ P '~/Repositories/iswap.nvim'
 P 'https://github.com/nvim-treesitter/nvim-treesitter'
 P 'https://github.com/nvim-telescope/telescope.nvim'
 P 'https://github.com/TimUntersberger/neogit'
--- P 'https://github.com/nvim-treesitter/nvim-treesitter-context'
+P 'https://github.com/nvim-treesitter/nvim-treesitter-context'
 P 'https://github.com/catppuccin/nvim'
 P 'https://github.com/lewis6991/gitsigns.nvim'
 P 'https://github.com/glepnir/lspsaga.nvim'
-P 'https://github.com/phaazon/hop.nvim'
+-- P 'https://github.com/phaazon/hop.nvim'
 P 'https://github.com/ggandor/leap.nvim'
 P 'https://github.com/pechorin/any-jump.vim'
 P '~/Code/longbow.nvim'
@@ -25,20 +25,32 @@ P 'https://github.com/nvim-treesitter/playground'
 P 'https://github.com/folke/lua-dev.nvim'
 P 'rktjmp/lush.nvim'
 P 'https://github.com/rose-pine/neovim'
-P 'karb94/neoscroll.nvim'
+-- P 'karb94/neoscroll.nvim'
+P 'https://github.com/stevearc/dressing.nvim'
+P 'https://github.com/hrsh7th/nvim-cmp'
+P 'hrsh7th/cmp-nvim-lsp'
 
 P.autoinstall(true)
 P.load()
 
 vim.g.mapleader = ' '
 
-require('hop').setup {}
-require('neoscroll').setup{
-  easing_function = "quadratic"
-}
+local cmp = require 'cmp'
+cmp.setup({
+  mapping = cmp.mapping.preset.insert({
+    ['<C-b>'] = cmp.mapping.scroll_docs(-1),
+    ['<C-f>'] = cmp.mapping.scroll_docs(1),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+  }),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+  })
+})
 
 vim.opt.termguicolors = true
-vim.opt.background = 'dark'
+vim.opt.background = 'light'
 vim.g.catppuccin_flavour = "macchiato" -- latte, frappe, macchiato, mocha
 require("catppuccin").setup {
   integrations = {
@@ -61,7 +73,6 @@ require("catppuccin").setup {
     gitsigns = true,
   }
 }
-vim.opt.background = 'light'
 vim.cmd [[colorscheme rose-pine]]
 
 vim.cmd [[set ts=2 sw=2 sts=2 et]]
@@ -69,11 +80,11 @@ vim.cmd [[set ts=2 sw=2 sts=2 et]]
 require('lualine').setup {
   options = {
     theme = 'rose-pine',
-    component_separators = { left = '', right = '' },
-    section_separators = { left = '', right = ''},
   }
 }
+
 require('Comment').setup()
+
 require('colorizer').setup {
   css = { rgb_fn = true; }
 }
@@ -87,11 +98,11 @@ vim.opt.wrap = false
 vim.o.completeopt = 'menuone,noinsert,noselect'
 vim.o.shortmess = vim.o.shortmess .. 'c'
 
--- local saga = require 'lspsaga'
--- saga.init_lsp_saga({
---   max_preview_lines = 15,
---   code_action_icon = "",
--- })
+local saga = require 'lspsaga'
+saga.init_lsp_saga({
+  max_preview_lines = 15,
+  code_action_icon = "",
+})
 
 local opts = { noremap = true, silent = true }
 vim.keymap.set("n", "<leader>scd", "<cmd>Lspsaga show_line_diagnostics<CR>", opts)
@@ -102,16 +113,6 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 
 local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-  local action = require("lspsaga.action")
-  -- scroll down hover doc or scroll in definition preview
-  vim.keymap.set("n", "<C-f>", function()
-    action.smart_scroll_with_saga(1)
-  end, { silent = true })
-  -- scroll up hover doc
-  vim.keymap.set("n", "<C-b>", function()
-    action.smart_scroll_with_saga(-1)
-  end, { silent = true })
 
   local bufopts = { noremap = true, silent = true, buffer = bufnr }
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
@@ -127,7 +128,8 @@ local on_attach = function(client, bufnr)
   end, bufopts)
   vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
   vim.keymap.set('n', '<leader>rn', "<cmd>Lspsaga rename<CR>", bufopts)
-  vim.keymap.set('n', '<leader>ca', "<cmd>Lspsaga code_action<CR>", bufopts)
+  -- vim.keymap.set('n', '<leader>ca', "<cmd>Lspsaga code_action<CR>", bufopts)
+  vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
   vim.keymap.set('n', '<leader>gr', "<cmd>Lspsaga lsp_finder<CR>", bufopts)
   vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format { async = true } end, bufopts)
 end
@@ -223,7 +225,7 @@ require('neogit').setup {
 vim.g.neovide_cursor_vfx_mode = 'railgun'
 vim.opt.guifont = 'JetBrainsMono Nerd Font Mono:h22'
 
-nc("of", "Telescope oldfiles theme=ivy")
+nc("of", "Telescope oldfiles theme=dropdown")
 nc("nt", "tabnew")
 nc("dt", "tabclose")
 nc("gg", "Neogit")
