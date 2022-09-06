@@ -17,23 +17,26 @@ P 'https://github.com/nvim-treesitter/nvim-treesitter-context'
 P 'https://github.com/catppuccin/nvim'
 P 'https://github.com/lewis6991/gitsigns.nvim'
 P 'https://github.com/glepnir/lspsaga.nvim'
--- P 'https://github.com/phaazon/hop.nvim'
-P 'https://github.com/ggandor/leap.nvim'
 P 'https://github.com/pechorin/any-jump.vim'
 P '~/Code/longbow.nvim'
 P 'https://github.com/nvim-treesitter/playground'
 P 'https://github.com/folke/lua-dev.nvim'
-P 'rktjmp/lush.nvim'
 P 'https://github.com/rose-pine/neovim'
--- P 'karb94/neoscroll.nvim'
 P 'https://github.com/stevearc/dressing.nvim'
 P 'https://github.com/hrsh7th/nvim-cmp'
 P 'hrsh7th/cmp-nvim-lsp'
+P 'https://github.com/antoinemadec/FixCursorHold.nvim'
+P 'nvim-telescope/telescope-frecency.nvim'
+P 'tami5/sqlite.lua'
+P 'https://github.com/JuliaEditorSupport/julia-vim'
 
 P.autoinstall(true)
 P.load()
 
+vim.g.cursorhold_updatetime = 1000
+
 vim.g.mapleader = ' '
+vim.opt.cmdheight = 0
 
 local cmp = require 'cmp'
 cmp.setup({
@@ -42,7 +45,7 @@ cmp.setup({
     ['<C-f>'] = cmp.mapping.scroll_docs(1),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.abort(),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    ['<C-y>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
   }),
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
@@ -51,31 +54,10 @@ cmp.setup({
 
 vim.opt.termguicolors = true
 vim.opt.background = 'light'
-vim.g.catppuccin_flavour = "macchiato" -- latte, frappe, macchiato, mocha
-require("catppuccin").setup {
-  integrations = {
-    native_lsp = {
-      enabled = true,
-      virtual_text = {
-        errors = { "italic" },
-        hints = { "italic" },
-        warnings = { "italic" },
-        information = { "italic" },
-      },
-      underlines = {
-        errors = { "underline" },
-        hints = { "underline" },
-        warnings = { "underline" },
-        information = { "underline" },
-      },
-    },
-    neogit = true,
-    gitsigns = true,
-  }
-}
+require('rose-pine').setup({
+  dark_variant = 'moon',
+})
 vim.cmd [[colorscheme rose-pine]]
-
-vim.cmd [[set ts=2 sw=2 sts=2 et]]
 
 require('lualine').setup {
   options = {
@@ -83,13 +65,17 @@ require('lualine').setup {
   }
 }
 
+vim.cmd [[set ts=2 sw=2 sts=2 et]]
+
 require('Comment').setup()
 
 require('colorizer').setup {
   css = { rgb_fn = true; }
 }
+
 require('iswap').setup {
-  debug = true
+  debug = true,
+  move_cursor = true
 }
 
 vim.opt.ignorecase = true
@@ -128,7 +114,6 @@ local on_attach = function(client, bufnr)
   end, bufopts)
   vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
   vim.keymap.set('n', '<leader>rn', "<cmd>Lspsaga rename<CR>", bufopts)
-  -- vim.keymap.set('n', '<leader>ca', "<cmd>Lspsaga code_action<CR>", bufopts)
   vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
   vim.keymap.set('n', '<leader>gr', "<cmd>Lspsaga lsp_finder<CR>", bufopts)
   vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format { async = true } end, bufopts)
@@ -138,6 +123,9 @@ require('lspconfig')['ocamllsp'].setup {
   on_attach = on_attach
 }
 require('lspconfig')['clangd'].setup {
+  on_attach = on_attach
+}
+require('lspconfig')['julials'].setup {
   on_attach = on_attach
 }
 require('lspconfig')['pyright'].setup {
@@ -183,9 +171,9 @@ require('nvim-treesitter.configs').setup {
   highlight = { enable = true }
 }
 
--- require('treesitter-context').setup{
---   enable = true
--- }
+require('treesitter-context').setup{
+  enable = true
+}
 
 local function nc(keys, cmd)
   vim.keymap.set("n", "<leader>" .. keys, "<cmd>" .. cmd .. "<cr>")
@@ -209,8 +197,6 @@ vim.g.filetype_pl = 'perl'
 
 vim.cmd [[au BufRead,BufNewFile *.pl setf perl]]
 
-require('leap').set_default_keymaps()
-
 require('neogit').setup {
   disable_commit_confirmation = true,
   disable_insert_on_commit = false,
@@ -225,7 +211,14 @@ require('neogit').setup {
 vim.g.neovide_cursor_vfx_mode = 'railgun'
 vim.opt.guifont = 'JetBrainsMono Nerd Font Mono:h22'
 
-nc("of", "Telescope oldfiles theme=dropdown")
+require"telescope".load_extension("frecency")
+
+vim.cmd[[
+command! -range=% CL <line1>,<line2>w !curl -F 'clbin=<-' https://clbin.com | tr -d '\n' | pbcopy
+]]
+
+nc("of", "Telescope frecency theme=dropdown")
+nc(",", "Telescope buffers theme=dropdown")
 nc("nt", "tabnew")
 nc("dt", "tabclose")
 nc("gg", "Neogit")
