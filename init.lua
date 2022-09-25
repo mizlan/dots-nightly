@@ -1,3 +1,5 @@
+vim.opt.background = 'light'
+
 P = require('neopm')
 
 P 'nvim-lua/plenary.nvim'
@@ -12,7 +14,7 @@ P 'https://github.com/romainl/vim-cool'
 P '~/Repositories/iswap.nvim'
 P 'https://github.com/nvim-treesitter/nvim-treesitter'
 P 'https://github.com/nvim-telescope/telescope.nvim'
-P 'https://github.com/TimUntersberger/neogit'
+P 'https://github.com/tpope/vim-fugitive'
 P 'https://github.com/nvim-treesitter/nvim-treesitter-context'
 P 'https://github.com/catppuccin/nvim'
 P 'https://github.com/lewis6991/gitsigns.nvim'
@@ -29,6 +31,7 @@ P 'https://github.com/antoinemadec/FixCursorHold.nvim'
 P 'nvim-telescope/telescope-frecency.nvim'
 P 'tami5/sqlite.lua'
 P 'https://github.com/JuliaEditorSupport/julia-vim'
+P 'https://github.com/Nymphium/vim-koka'
 
 P.autoinstall(true)
 P.load()
@@ -36,7 +39,7 @@ P.load()
 vim.g.cursorhold_updatetime = 1000
 
 vim.g.mapleader = ' '
-vim.opt.cmdheight = 0
+vim.opt.cmdheight = 1
 
 local cmp = require 'cmp'
 cmp.setup({
@@ -53,7 +56,6 @@ cmp.setup({
 })
 
 vim.opt.termguicolors = true
-vim.opt.background = 'light'
 require('rose-pine').setup({
   dark_variant = 'moon',
 })
@@ -92,8 +94,6 @@ saga.init_lsp_saga({
 
 local opts = { noremap = true, silent = true }
 vim.keymap.set("n", "<leader>scd", "<cmd>Lspsaga show_line_diagnostics<CR>", opts)
-vim.keymap.set("n", "[e", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts)
-vim.keymap.set("n", "]e", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 
@@ -156,15 +156,6 @@ require('lspconfig')['sumneko_lua'].setup(require("lua-dev").setup {
 
 vim.opt.signcolumn = 'yes'
 
-vim.cmd [[
-if executable('opam')
-  let g:opamshare=substitute(system('opam var share'),'\n$','','''')
-  if isdirectory(g:opamshare."/merlin/vim")
-    execute "set rtp+=" . g:opamshare."/merlin/vim"
-  endif
-endif
-]]
-
 vim.g.python3_host_prog = '~/GlobalVenv/bin/python3.9'
 
 require('nvim-treesitter.configs').setup {
@@ -197,17 +188,6 @@ vim.g.filetype_pl = 'perl'
 
 vim.cmd [[au BufRead,BufNewFile *.pl setf perl]]
 
-require('neogit').setup {
-  disable_commit_confirmation = true,
-  disable_insert_on_commit = false,
-  use_magit_keybindings = true,
-  signs = {
-    section = { "", "" },
-    item = { "", "" },
-    hunk = { "", "" },
-  },
-}
-
 vim.g.neovide_cursor_vfx_mode = 'railgun'
 vim.opt.guifont = 'JetBrainsMono Nerd Font Mono:h22'
 
@@ -217,8 +197,11 @@ vim.cmd[[
 command! -range=% CL <line1>,<line2>w !curl -F 'clbin=<-' https://clbin.com | tr -d '\n' | pbcopy
 ]]
 
+vim.cmd [[set formatoptions-=cro]]
+
 nc("of", "Telescope frecency theme=dropdown")
 nc(",", "Telescope buffers theme=dropdown")
+nc("ff", "Telescope find_files theme=dropdown")
 nc("nt", "tabnew")
 nc("dt", "tabclose")
-nc("gg", "Neogit")
+nc("gg", "Git")
