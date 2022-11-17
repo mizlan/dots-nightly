@@ -50,7 +50,6 @@ end)
 P = require('neopm')
 
 P 'nvim-lua/plenary.nvim'
-P 'https://github.com/romainl/Apprentice'
 P 'https://github.com/nvim-lualine/lualine.nvim'
 -- P 'https://github.com/vale1410/vim-minizinc'
 P 'https://github.com/numToStr/Comment.nvim'
@@ -63,7 +62,6 @@ P 'https://github.com/nvim-treesitter/nvim-treesitter'
 P 'https://github.com/nvim-telescope/telescope.nvim'
 P 'https://github.com/tpope/vim-fugitive'
 P 'https://github.com/nvim-treesitter/nvim-treesitter-context'
-P 'https://github.com/catppuccin/nvim'
 P 'https://github.com/lewis6991/gitsigns.nvim'
 P 'https://github.com/glepnir/lspsaga.nvim'
 P 'https://github.com/pechorin/any-jump.vim'
@@ -89,7 +87,6 @@ vim.g.cursorhold_updatetime = 1000
 
 vim.g.vimtex_view_method = 'sioyek'
 vim.g.vimtex_view_sioyek_exe = '/Applications/sioyek.app/Contents/MacOS/sioyek'
-
 
 vim.g.mapleader = ' '
 vim.opt.cmdheight = 1
