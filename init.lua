@@ -67,7 +67,7 @@ P 'https://github.com/glepnir/lspsaga.nvim'
 P 'https://github.com/pechorin/any-jump.vim'
 P '~/Code/longbow.nvim'
 P 'https://github.com/nvim-treesitter/playground'
-P 'https://github.com/folke/lua-dev.nvim'
+P 'https://github.com/folke/neodev.nvim'
 P 'https://github.com/rose-pine/neovim'
 P 'https://github.com/stevearc/dressing.nvim'
 P 'https://github.com/hrsh7th/nvim-cmp'
@@ -79,6 +79,7 @@ P 'https://github.com/JuliaEditorSupport/julia-vim'
 P 'https://github.com/Nymphium/vim-koka'
 P 'lervag/vimtex'
 P 'https://github.com/folke/zen-mode.nvim'
+P 'https://github.com/MrcJkb/haskell-tools.nvim'
 
 P.autoinstall(true)
 P.load()
@@ -199,11 +200,10 @@ require('lspconfig')['hls'].setup {
     end
   end,
 }
-require('lspconfig')['sumneko_lua'].setup(require("lua-dev").setup {
-  lspconfig = {
-    on_attach = on_attach,
-  }
-})
+
+require("neodev").setup({})
+
+require('lspconfig')['sumneko_lua'].setup{}
 
 vim.opt.signcolumn = 'yes'
 
