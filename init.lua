@@ -53,7 +53,7 @@ P 'nvim-lua/plenary.nvim'
 P 'https://github.com/nvim-lualine/lualine.nvim'
 -- P 'https://github.com/vale1410/vim-minizinc'
 P 'https://github.com/numToStr/Comment.nvim'
-P 'https://github.com/tpope/vim-surround'
+P 'https://github.com/kylechui/nvim-surround'
 P 'norcalli/nvim-colorizer.lua'
 P 'https://github.com/neovim/nvim-lspconfig'
 P 'https://github.com/romainl/vim-cool'
@@ -72,7 +72,6 @@ P 'https://github.com/rose-pine/neovim'
 P 'https://github.com/stevearc/dressing.nvim'
 P 'https://github.com/hrsh7th/nvim-cmp'
 P 'hrsh7th/cmp-nvim-lsp'
-P 'https://github.com/antoinemadec/FixCursorHold.nvim'
 P 'nvim-telescope/telescope-frecency.nvim'
 P 'tami5/sqlite.lua'
 P 'https://github.com/JuliaEditorSupport/julia-vim'
@@ -80,6 +79,7 @@ P 'https://github.com/Nymphium/vim-koka'
 P 'lervag/vimtex'
 P 'https://github.com/folke/zen-mode.nvim'
 P 'https://github.com/MrcJkb/haskell-tools.nvim'
+P 'https://github.com/itchyny/vim-haskell-indent'
 
 P.autoinstall(true)
 P.load()
@@ -92,6 +92,9 @@ vim.g.vimtex_view_sioyek_exe = '/Applications/sioyek.app/Contents/MacOS/sioyek'
 vim.g.mapleader = ' '
 vim.opt.cmdheight = 1
 vim.opt.laststatus = 3
+
+vim.opt.splitright = true
+vim.opt.splitbelow = true
 
 local cmp = require 'cmp'
 cmp.setup({
@@ -116,6 +119,8 @@ vim.cmd [[colorscheme rose-pine]]
 require('lualine').setup {
   options = {
     theme = 'rose-pine',
+    section_separators = { left = '', right = ''},
+    component_separators = ''
   }
 }
 
@@ -185,20 +190,7 @@ require('lspconfig')['pyright'].setup {
   cmd = { "pyright-langserver", "--stdio", "-v", "/Users/ml/GlobalVenv" }
 }
 require('lspconfig')['hls'].setup {
-  on_attach = function(client, bufnr)
-    on_attach(client, bufnr)
-    if client.server_capabilities.codeLensProvider ~= nil then
-      vim.keymap.set('n', '<leader>cll', vim.lsp.codelens.run, { buffer = bufnr })
-      vim.keymap.set('n', '<leader>clr', vim.lsp.codelens.refresh, { buffer = bufnr })
-      vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI', 'InsertLeave' }, {
-        group = vim.api.nvim_create_augroup('haskell-codelens', {}),
-        pattern = { '*.hs' },
-        callback = function()
-          vim.lsp.codelens.refresh()
-        end,
-      })
-    end
-  end,
+  on_attach = on_attach
 }
 
 require("neodev").setup({})
@@ -285,6 +277,29 @@ require("zen-mode").setup {
   on_close = function()
   end,
 }
+
+require('nvim-surround').setup {}
+
+-- local ht = require('haskell-tools')
+-- local def_opts = { noremap = true, silent = true, }
+-- ht.setup {
+--   hls = {
+--     on_attach = function(client, bufnr)
+--       on_attach(client, bufnr)
+--       local opts = vim.tbl_extend('keep', def_opts, { buffer = bufnr, })
+--       vim.keymap.set('n', '<leader>cll', vim.lsp.codelens.run, opts)
+--       vim.keymap.set('n', '<leader>hs', ht.hoogle.hoogle_signature, opts)
+--     end,
+--   },
+-- }
+-- -- Suggested keymaps that do not depend on haskell-language-server
+-- -- Toggle a GHCi repl for the current package
+-- vim.keymap.set('n', '<leader>rr', ht.repl.toggle, def_opts)
+-- -- Toggle a GHCi repl for the current buffer
+-- vim.keymap.set('n', '<leader>rf', function()
+--   ht.repl.toggle(vim.api.nvim_buf_get_name(0))
+-- end, def_opts)
+-- vim.keymap.set('n', '<leader>rq', ht.repl.quit, def_opts)
 
 nc("of", "Telescope frecency theme=dropdown")
 nc(",", "Telescope buffers theme=dropdown")
