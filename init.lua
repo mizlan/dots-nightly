@@ -1,52 +1,4 @@
--- {{{ adaptive theme
-vim.opt.foldmethod = 'marker'
-local uv = vim.loop
-
--- trim function, taken from http://lua-users.org/wiki/StringTrim
-function trim6(s)
-  return s:match '^()%s*$' and '' or s:match '^%s*(.*%S)'
-end
-
--- taken from https://github.com/nvim-lua/plenary.nvim
-local read_file = function(path, callback)
-  uv.fs_open(path, "r", 438, function(err, fd)
-    assert(not err, err)
-    uv.fs_fstat(fd, function(err, stat)
-      assert(not err, err)
-      uv.fs_read(fd, stat.size, 0, function(err, data)
-        assert(not err, err)
-        uv.fs_close(fd, function(err)
-          assert(not err, err)
-          callback(data)
-        end)
-      end)
-    end)
-  end)
-end
-
-local themepath = "/Users/ml/theme"
-function adjust_theme()
-  read_file(themepath, vim.schedule_wrap(function(data)
-    if trim6(data) == 'light' then
-      vim.opt.background = 'light'
-    else
-      vim.opt.background = 'dark'
-    end
-  end))
-end
-
-adjust_theme()
-
-local fse = vim.loop.new_fs_event()
-vim.loop.fs_event_start(fse, themepath, {}, function(err, fname, status)
-  if (err) then
-    print("Error " .. err)
-  else
-    adjust_theme()
-  end
-end)
--- }}}
-
+require('adaptive')
 P = require('neopm')
 
 P 'nvim-lua/plenary.nvim'
@@ -80,6 +32,9 @@ P 'lervag/vimtex'
 P 'https://github.com/folke/zen-mode.nvim'
 P 'https://github.com/MrcJkb/haskell-tools.nvim'
 P 'https://github.com/itchyny/vim-haskell-indent'
+-- P 'JASONews/glow-hover'
+P 'https://github.com/L3MON4D3/LuaSnip'
+P 'https://github.com/vim-scripts/alex.vim'
 
 P.autoinstall(true)
 P.load()
@@ -119,7 +74,7 @@ vim.cmd [[colorscheme rose-pine]]
 require('lualine').setup {
   options = {
     theme = 'rose-pine',
-    section_separators = { left = '', right = ''},
+    section_separators = { left = '', right = '' },
     component_separators = ''
   }
 }
@@ -134,7 +89,7 @@ require('colorizer').setup {
 
 require('iswap').setup {
   debug = true,
-  move_cursor = true
+  move_cursor = false
 }
 
 vim.opt.ignorecase = true
@@ -189,13 +144,16 @@ require('lspconfig')['pyright'].setup {
   on_attach = on_attach,
   cmd = { "pyright-langserver", "--stdio", "-v", "/Users/ml/GlobalVenv" }
 }
-require('lspconfig')['hls'].setup {
+-- require('lspconfig')['hls'].setup {
+--   on_attach = on_attach,
+--   filetypes = { 'haskell', 'lhaskell', 'cabal' },
+-- }
+
+require("neodev").setup()
+
+require('lspconfig')['sumneko_lua'].setup {
   on_attach = on_attach
 }
-
-require("neodev").setup({})
-
-require('lspconfig')['sumneko_lua'].setup{}
 
 vim.opt.signcolumn = 'yes'
 
@@ -220,6 +178,7 @@ end
 require('gitsigns').setup {
   on_attach = function()
     nc("sh", "Gitsigns stage_hunk")
+    nc("sb", "Gitsigns stage_buffer")
     nc("rh", "Gitsigns reset_hunk")
     nc("nh", "Gitsigns next_hunk")
     nc("ph", "Gitsigns prev_hunk")
@@ -278,35 +237,39 @@ require("zen-mode").setup {
   end,
 }
 
-require('nvim-surround').setup {}
+require('nvim-surround').setup {
+  indent_lines = false
+}
 
--- local ht = require('haskell-tools')
--- local def_opts = { noremap = true, silent = true, }
--- ht.setup {
---   hls = {
---     on_attach = function(client, bufnr)
---       on_attach(client, bufnr)
---       local opts = vim.tbl_extend('keep', def_opts, { buffer = bufnr, })
---       vim.keymap.set('n', '<leader>cll', vim.lsp.codelens.run, opts)
---       vim.keymap.set('n', '<leader>hs', ht.hoogle.hoogle_signature, opts)
---     end,
---   },
--- }
--- -- Suggested keymaps that do not depend on haskell-language-server
--- -- Toggle a GHCi repl for the current package
--- vim.keymap.set('n', '<leader>rr', ht.repl.toggle, def_opts)
--- -- Toggle a GHCi repl for the current buffer
--- vim.keymap.set('n', '<leader>rf', function()
---   ht.repl.toggle(vim.api.nvim_buf_get_name(0))
--- end, def_opts)
--- vim.keymap.set('n', '<leader>rq', ht.repl.quit, def_opts)
+local ht = require('haskell-tools')
+local def_opts = { noremap = true, silent = true, }
+ht.setup {
+  hls = {
+    filetypes = { 'haskell', 'lhaskell', 'cabal' },
+    on_attach = function(client, bufnr)
+      on_attach(client, bufnr)
+      local opts = vim.tbl_extend('keep', def_opts, { buffer = bufnr, })
+      vim.keymap.set('n', '<leader>cll', vim.lsp.codelens.run, opts)
+      vim.keymap.set('n', '<leader>hs', ht.hoogle.hoogle_signature, opts)
+    end,
+  },
+}
+-- Suggested keymaps that do not depend on haskell-language-server
+-- Toggle a GHCi repl for the current package
+vim.keymap.set('n', '<leader>rr', ht.repl.toggle, def_opts)
+-- Toggle a GHCi repl for the current buffer
+vim.keymap.set('n', '<leader>rf', function()
+  ht.repl.toggle(vim.api.nvim_buf_get_name(0))
+end, def_opts)
+vim.keymap.set('n', '<leader>rq', ht.repl.quit, def_opts)
 
 nc("of", "Telescope frecency theme=dropdown")
 nc(",", "Telescope buffers theme=dropdown")
 nc("ff", "Telescope find_files theme=dropdown")
 nc("nt", "tabnew")
 nc("dt", "tabclose")
-nc("gg", "Git")
+nc("gg", "tab Git")
+nc("hc", "!cabal run")
 
 vim.cmd [[au FileType tex iabbrev Vr \vec{r}]]
 vim.cmd [[au FileType tex iabbrev Vs \vec{s}]]
@@ -320,3 +283,31 @@ vim.cmd [[au FileType tex iabbrev R2 $\RR^2$]]
 vim.cmd [[au FileType tex iabbrev R3 $\RR^3$]]
 vim.cmd [[au FileType tex imap <> \tuple*{}<Left>]]
 vim.cmd [[au FileType tex imap () \parens*{}<Left>]]
+
+-- require 'glow-hover'.setup {
+--   -- The followings are the default values
+--   max_width = 100,
+--   padding = 10,
+--   border = 'shadow',
+--   glow_path = 'glow'
+-- }
+
+vim.opt.list = true
+vim.opt.listchars = "tab:··"
+
+vim.cmd [[
+" press <Tab> to expand or jump in a snippet. These can also be mapped separately
+" via <Plug>luasnip-expand-snippet and <Plug>luasnip-jump-next.
+imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>' 
+" -1 for jumping backwards.
+inoremap <silent> <S-Tab> <cmd>lua require'luasnip'.jump(-1)<Cr>
+
+snoremap <silent> <Tab> <cmd>lua require('luasnip').jump(1)<Cr>
+snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
+
+" For changing choices in choiceNodes (not strictly necessary for a basic setup).
+imap <silent><expr> <C-E> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-E>'
+smap <silent><expr> <C-E> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-E>'
+]]
+
+require("luasnip.loaders.from_snipmate").lazy_load()
