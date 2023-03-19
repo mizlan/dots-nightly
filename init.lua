@@ -15,7 +15,7 @@ P 'https://github.com/nvim-telescope/telescope.nvim'
 P 'https://github.com/tpope/vim-fugitive'
 P 'https://github.com/nvim-treesitter/nvim-treesitter-context'
 P 'https://github.com/lewis6991/gitsigns.nvim'
-P 'https://github.com/glepnir/lspsaga.nvim'
+-- P 'https://github.com/glepnir/lspsaga.nvim'
 P 'https://github.com/pechorin/any-jump.vim'
 P '~/Code/longbow.nvim'
 P 'https://github.com/nvim-treesitter/playground'
@@ -24,17 +24,28 @@ P 'https://github.com/rose-pine/neovim'
 P 'https://github.com/stevearc/dressing.nvim'
 P 'https://github.com/hrsh7th/nvim-cmp'
 P 'hrsh7th/cmp-nvim-lsp'
+P 'https://github.com/hrsh7th/cmp-nvim-lsp-signature-help'
 P 'nvim-telescope/telescope-frecency.nvim'
 P 'tami5/sqlite.lua'
-P 'https://github.com/JuliaEditorSupport/julia-vim'
-P 'https://github.com/Nymphium/vim-koka'
+-- P 'https://github.com/JuliaEditorSupport/julia-vim'
+-- P 'https://github.com/Nymphium/vim-koka'
 P 'lervag/vimtex'
 P 'https://github.com/folke/zen-mode.nvim'
 P 'https://github.com/MrcJkb/haskell-tools.nvim'
 P 'https://github.com/itchyny/vim-haskell-indent'
--- P 'JASONews/glow-hover'
 P 'https://github.com/L3MON4D3/LuaSnip'
-P 'https://github.com/vim-scripts/alex.vim'
+-- P 'https://github.com/vim-scripts/alex.vim'
+-- P 'https://github.com/romgrk/kirby.nvim'
+P 'romgrk/fzy-lua-native' -- needs 'make install'
+P 'nvim-tree/nvim-web-devicons'
+-- P 'romgrk/kui.nvim'
+P 'kevinhwang91/nvim-ufo'
+P 'kevinhwang91/promise-async'
+P 'https://github.com/hrsh7th/cmp-buffer'
+P 'https://github.com/bkad/CamelCaseMotion'
+P 'https://github.com/stevearc/oil.nvim'
+P 'https://github.com/edluffy/hologram.nvim'
+P 'https://github.com/nvim-telescope/telescope-file-browser.nvim'
 
 P.autoinstall(true)
 P.load()
@@ -53,15 +64,23 @@ vim.opt.splitbelow = true
 
 local cmp = require 'cmp'
 cmp.setup({
+  snippet = {
+    expand = function(args)
+      require('luasnip').lsp_expand(args.body)
+    end
+  },
   mapping = cmp.mapping.preset.insert({
-    ['<C-b>'] = cmp.mapping.scroll_docs(-1),
-    ['<C-f>'] = cmp.mapping.scroll_docs(1),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.abort(),
-    ['<C-y>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        ['<C-b>'] = cmp.mapping.scroll_docs(-1),
+        ['<C-f>'] = cmp.mapping.scroll_docs(1),
+        ['<C-Space>'] = cmp.mapping.complete(),
+        ['<C-e>'] = cmp.mapping.abort(),
+        ['<C-y>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
   }),
   sources = cmp.config.sources({
+    { name = 'luasnip' },
     { name = 'nvim_lsp' },
+    { name = 'nvim_lsp_signature_help' },
+    { name = 'buffer' },
   })
 })
 
@@ -84,12 +103,12 @@ vim.cmd [[set ts=2 sw=2 sts=2 et]]
 require('Comment').setup()
 
 require('colorizer').setup {
-  css = { rgb_fn = true; }
+  css = { rgb_fn = true, }
 }
 
 require('iswap').setup {
   debug = true,
-  move_cursor = false
+  move_cursor = true
 }
 
 vim.opt.ignorecase = true
@@ -98,16 +117,11 @@ vim.opt.wrap = false
 vim.o.completeopt = 'menuone,noinsert,noselect'
 vim.o.shortmess = vim.o.shortmess .. 'c'
 
-local saga = require 'lspsaga'
-saga.init_lsp_saga({
-  max_preview_lines = 15,
-  code_action_icon = "",
-})
-
 local opts = { noremap = true, silent = true }
-vim.keymap.set("n", "<leader>scd", "<cmd>Lspsaga show_line_diagnostics<CR>", opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+
+-- local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
@@ -115,7 +129,6 @@ local on_attach = function(client, bufnr)
   local bufopts = { noremap = true, silent = true, buffer = bufnr }
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
   vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-  vim.keymap.set("n", "<leader>pvd", "<cmd>Lspsaga preview_definition<CR>", { silent = true })
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
   vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
   vim.keymap.set('n', '<leader>sig', vim.lsp.buf.signature_help, bufopts)
@@ -125,34 +138,58 @@ local on_attach = function(client, bufnr)
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, bufopts)
   vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
-  vim.keymap.set('n', '<leader>rn', "<cmd>Lspsaga rename<CR>", bufopts)
+  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
   vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
-  vim.keymap.set('n', '<leader>gr', "<cmd>Lspsaga lsp_finder<CR>", bufopts)
+  vim.keymap.set('n', '<leader>gr', vim.lsp.buf.references, bufopts)
   vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format { async = true } end, bufopts)
 end
 
 require('lspconfig')['ocamllsp'].setup {
   on_attach = on_attach
 }
+
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+capabilities.textDocument.foldingRange = {
+  dynamicRegistration = false,
+  lineFoldingOnly = true
+}
 require('lspconfig')['clangd'].setup {
-  on_attach = on_attach
+  on_attach = on_attach,
+  capabilities = capabilities
 }
 require('lspconfig')['julials'].setup {
+  on_attach = on_attach
+}
+require('lspconfig')['tsserver'].setup {
   on_attach = on_attach
 }
 require('lspconfig')['pyright'].setup {
   on_attach = on_attach,
   cmd = { "pyright-langserver", "--stdio", "-v", "/Users/ml/GlobalVenv" }
 }
--- require('lspconfig')['hls'].setup {
---   on_attach = on_attach,
---   filetypes = { 'haskell', 'lhaskell', 'cabal' },
--- }
+require('lspconfig')['hls'].setup {
+  on_attach = on_attach,
+  filetypes = { 'haskell', 'lhaskell', 'cabal' },
+}
 
 require("neodev").setup()
 
-require('lspconfig')['sumneko_lua'].setup {
+require('lspconfig')['lua_ls'].setup {
   on_attach = on_attach
+}
+
+require('lspconfig')['gopls'].setup {
+  on_attach = on_attach
+}
+
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+capabilities.textDocument.foldingRange = {
+  dynamicRegistration = false,
+  lineFoldingOnly = true
+}
+require('lspconfig')['cssls'].setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
 }
 
 vim.opt.signcolumn = 'yes'
@@ -241,31 +278,49 @@ require('nvim-surround').setup {
   indent_lines = false
 }
 
-local ht = require('haskell-tools')
-local def_opts = { noremap = true, silent = true, }
-ht.setup {
-  hls = {
-    filetypes = { 'haskell', 'lhaskell', 'cabal' },
-    on_attach = function(client, bufnr)
-      on_attach(client, bufnr)
-      local opts = vim.tbl_extend('keep', def_opts, { buffer = bufnr, })
-      vim.keymap.set('n', '<leader>cll', vim.lsp.codelens.run, opts)
-      vim.keymap.set('n', '<leader>hs', ht.hoogle.hoogle_signature, opts)
-    end,
+-- local ht = require('haskell-tools')
+-- local def_opts = { noremap = true, silent = true, }
+-- ht.setup {
+--   tools = {
+--     hover = {
+--       disable = true
+--     }
+--   },
+--   hls = {
+--     filetypes = { 'haskell', 'lhaskell', 'cabal' },
+--     on_attach = function(client, bufnr)
+--       on_attach(client, bufnr)
+--       local opts = vim.tbl_extend('keep', def_opts, { buffer = bufnr, })
+--       vim.keymap.set('n', '<leader>cll', vim.lsp.codelens.run, opts)
+--       vim.keymap.set('n', '<leader>hs', ht.hoogle.hoogle_signature, opts)
+--     end,
+--   },
+-- }
+-- -- Suggested keymaps that do not depend on haskell-language-server
+-- -- Toggle a GHCi repl for the current package
+-- vim.keymap.set('n', '<leader>rr', ht.repl.toggle, def_opts)
+-- -- Toggle a GHCi repl for the current buffer
+-- vim.keymap.set('n', '<leader>rf', function()
+--   ht.repl.toggle(vim.api.nvim_buf_get_name(0))
+-- end, def_opts)
+-- vim.keymap.set('n', '<leader>rq', ht.repl.quit, def_opts)
+
+require("telescope").setup {
+  extensions = {
+    file_browser = {
+      theme = "ivy",
+      hijack_netrw = true,
+    },
   },
 }
--- Suggested keymaps that do not depend on haskell-language-server
--- Toggle a GHCi repl for the current package
-vim.keymap.set('n', '<leader>rr', ht.repl.toggle, def_opts)
--- Toggle a GHCi repl for the current buffer
-vim.keymap.set('n', '<leader>rf', function()
-  ht.repl.toggle(vim.api.nvim_buf_get_name(0))
-end, def_opts)
-vim.keymap.set('n', '<leader>rq', ht.repl.quit, def_opts)
+require("telescope").load_extension "file_browser"
 
 nc("of", "Telescope frecency theme=dropdown")
+nc("oo", "Telescope oldfiles theme=dropdown")
 nc(",", "Telescope buffers theme=dropdown")
-nc("ff", "Telescope find_files theme=dropdown")
+nc(".", "Telescope file_browser")
+nc("im", "Telescope lsp_document_symbols")
+nc("rg", "Telescope live_grep")
 nc("nt", "tabnew")
 nc("dt", "tabclose")
 nc("gg", "tab Git")
@@ -284,21 +339,21 @@ vim.cmd [[au FileType tex iabbrev R3 $\RR^3$]]
 vim.cmd [[au FileType tex imap <> \tuple*{}<Left>]]
 vim.cmd [[au FileType tex imap () \parens*{}<Left>]]
 
--- require 'glow-hover'.setup {
---   -- The followings are the default values
---   max_width = 100,
---   padding = 10,
---   border = 'shadow',
---   glow_path = 'glow'
--- }
-
 vim.opt.list = true
 vim.opt.listchars = "tab:··"
 
 vim.cmd [[
+nn <Leader>s<Right> <cmd>ISwapNodeWithRight<CR>
+nn <Leader>s<Left> <cmd>ISwapNodeWithLeft<CR>
+nn <Leader>ss <cmd>ISwap<CR>
+]]
+
+require('ufo').setup()
+
+vim.cmd [[
 " press <Tab> to expand or jump in a snippet. These can also be mapped separately
 " via <Plug>luasnip-expand-snippet and <Plug>luasnip-jump-next.
-imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>' 
+imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>'
 " -1 for jumping backwards.
 inoremap <silent> <S-Tab> <cmd>lua require'luasnip'.jump(-1)<Cr>
 
@@ -309,5 +364,18 @@ snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
 imap <silent><expr> <C-E> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-E>'
 smap <silent><expr> <C-E> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-E>'
 ]]
+
+vim.cmd [[
+let g:camelcasemotion_key = '<leader>'
+]]
+
+vim.o.foldlevel = 10
+vim.o.cursorline = true
+
+require("oil").setup()
+
+require('hologram').setup {
+  auto_display = true
+}
 
 require("luasnip.loaders.from_snipmate").lazy_load()
