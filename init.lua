@@ -44,11 +44,17 @@ P 'kevinhwang91/promise-async'
 P 'https://github.com/hrsh7th/cmp-buffer'
 P 'https://github.com/bkad/CamelCaseMotion'
 P 'https://github.com/stevearc/oil.nvim'
-P 'https://github.com/edluffy/hologram.nvim'
 P 'https://github.com/nvim-telescope/telescope-file-browser.nvim'
+P 'https://github.com/junegunn/vim-easy-align'
+P 'ruifm/gitlinker.nvim'
 
 P.autoinstall(true)
 P.load()
+
+vim.cmd [[
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+]]
 
 vim.g.cursorhold_updatetime = 1000
 
@@ -217,8 +223,8 @@ require('gitsigns').setup {
     nc("sh", "Gitsigns stage_hunk")
     nc("sb", "Gitsigns stage_buffer")
     nc("rh", "Gitsigns reset_hunk")
-    nc("nh", "Gitsigns next_hunk")
-    nc("ph", "Gitsigns prev_hunk")
+    vim.keymap.set("n", "]h", "<cmd>Gitsigns next_hunk<cr>")
+    vim.keymap.set("n", "[h", "<cmd>Gitsigns prev_hunk<cr>")
     nc("pvh", "Gitsigns preview_hunk")
   end
 }
@@ -373,9 +379,5 @@ vim.o.foldlevel = 10
 vim.o.cursorline = true
 
 require("oil").setup()
-
-require('hologram').setup {
-  auto_display = true
-}
 
 require("luasnip.loaders.from_snipmate").lazy_load()
