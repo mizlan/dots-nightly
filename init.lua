@@ -42,11 +42,16 @@ P 'nvim-tree/nvim-web-devicons'
 P 'kevinhwang91/nvim-ufo'
 P 'kevinhwang91/promise-async'
 P 'https://github.com/hrsh7th/cmp-buffer'
-P 'https://github.com/bkad/CamelCaseMotion'
 P 'https://github.com/stevearc/oil.nvim'
 P 'https://github.com/nvim-telescope/telescope-file-browser.nvim'
 P 'https://github.com/junegunn/vim-easy-align'
 P 'ruifm/gitlinker.nvim'
+P 'kaarmu/typst.vim'
+-- P 'icedman/nvim-textmate'
+P 'https://github.com/ziglang/zig.vim'
+P 'https://github.com/dhruvasagar/vim-table-mode'
+P 'https://github.com/smjonas/inc-rename.nvim'
+P 'https://github.com/natecraddock/telescope-zf-native.nvim'
 
 P.autoinstall(true)
 P.load()
@@ -173,15 +178,38 @@ require('lspconfig')['pyright'].setup {
   on_attach = on_attach,
   cmd = { "pyright-langserver", "--stdio", "-v", "/Users/ml/GlobalVenv" }
 }
-require('lspconfig')['hls'].setup {
-  on_attach = on_attach,
-  filetypes = { 'haskell', 'lhaskell', 'cabal' },
-}
-
-require("neodev").setup()
+-- require('lspconfig')['hls'].setup {
+--   on_attach = on_attach,
+--   filetypes = { 'haskell', 'lhaskell', 'cabal' },
+-- }
 
 require('lspconfig')['lua_ls'].setup {
-  on_attach = on_attach
+  on_attach = on_attach,
+  settings = {
+    Lua = {
+      runtime = {
+        -- Tell the language server which version of Lua you're using
+        -- (most likely LuaJIT in the case of Neovim)
+        version = 'LuaJIT',
+      },
+      diagnostics = {
+        -- Get the language server to recognize the `vim` global
+        globals = {
+          'vim',
+          'require'
+        },
+      },
+      workspace = {
+        -- Make the server aware of Neovim runtime files
+        library = vim.api.nvim_get_runtime_file("", true),
+      },
+      -- Do not send telemetry data containing a randomized but unique identifier
+      telemetry = {
+        enable = false,
+      },
+    },
+  },
+
 }
 
 require('lspconfig')['gopls'].setup {
@@ -197,6 +225,19 @@ require('lspconfig')['cssls'].setup {
   on_attach = on_attach,
   capabilities = capabilities,
 }
+
+require('lspconfig')['typst_lsp'].setup {
+  on_attach = on_attach,
+  settings = {
+    exportPdf = "onType",
+  }
+}
+
+require('lspconfig')['zls'].setup {
+  on_attach = on_attach,
+}
+
+require("neodev").setup()
 
 vim.opt.signcolumn = 'yes'
 
@@ -236,9 +277,8 @@ vim.opt.showmode = false
 vim.cmd [[au BufRead,BufNewFile *.pl setf perl]]
 
 vim.g.neovide_cursor_vfx_mode = 'railgun'
-vim.opt.guifont = 'JetBrainsMono Nerd Font Mono:h22'
+vim.opt.guifont = 'JetBrainsMono Nerd Font Mono:h18'
 
-require "telescope".load_extension("frecency")
 
 vim.cmd [[
 command! -range=% SP <line1>,<line2>w !curl -F 'sprunge=<-' http://sprunge.us | tr -d '\n' | pbcopy
@@ -284,24 +324,25 @@ require('nvim-surround').setup {
   indent_lines = false
 }
 
--- local ht = require('haskell-tools')
--- local def_opts = { noremap = true, silent = true, }
--- ht.setup {
---   tools = {
---     hover = {
---       disable = true
---     }
---   },
---   hls = {
---     filetypes = { 'haskell', 'lhaskell', 'cabal' },
---     on_attach = function(client, bufnr)
---       on_attach(client, bufnr)
---       local opts = vim.tbl_extend('keep', def_opts, { buffer = bufnr, })
---       vim.keymap.set('n', '<leader>cll', vim.lsp.codelens.run, opts)
---       vim.keymap.set('n', '<leader>hs', ht.hoogle.hoogle_signature, opts)
---     end,
---   },
--- }
+local ht = require('haskell-tools')
+local def_opts = { noremap = true, silent = true, }
+ht.setup {
+  tools = {
+    hover = {
+      disable = true
+    }
+  },
+  hls = {
+    filetypes = { 'haskell', 'lhaskell', 'cabal' },
+    on_attach = function(client, bufnr)
+      on_attach(client, bufnr)
+      local opts = vim.tbl_extend('keep', def_opts, { buffer = bufnr, })
+      vim.keymap.set('n', '<leader>cll', vim.lsp.codelens.run, opts)
+      vim.keymap.set('n', '<leader>hs', ht.hoogle.hoogle_signature, opts)
+    end,
+  },
+}
+
 -- -- Suggested keymaps that do not depend on haskell-language-server
 -- -- Toggle a GHCi repl for the current package
 -- vim.keymap.set('n', '<leader>rr', ht.repl.toggle, def_opts)
@@ -312,14 +353,20 @@ require('nvim-surround').setup {
 -- vim.keymap.set('n', '<leader>rq', ht.repl.quit, def_opts)
 
 require("telescope").setup {
+  defaults = {
+    path_display = { absolute = true }
+  },
   extensions = {
     file_browser = {
       theme = "ivy",
       hijack_netrw = true,
     },
+    frecency = {
+      show_scores = true,
+      auto_validate = false
+    }
   },
 }
-require("telescope").load_extension "file_browser"
 
 nc("of", "Telescope frecency theme=dropdown")
 nc("oo", "Telescope oldfiles theme=dropdown")
@@ -371,13 +418,23 @@ imap <silent><expr> <C-E> luasnip#choice_active() ? '<Plug>luasnip-next-choice' 
 smap <silent><expr> <C-E> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-E>'
 ]]
 
-vim.cmd [[
-let g:camelcasemotion_key = '<leader>'
-]]
+require("luasnip.loaders.from_snipmate").lazy_load()
 
 vim.o.foldlevel = 10
 vim.o.cursorline = true
 
 require("oil").setup()
 
-require("luasnip.loaders.from_snipmate").lazy_load()
+vim.cmd [[
+au ColorScheme * hi! link NonText WinSeparator
+]]
+
+require "telescope".load_extension("frecency")
+require("telescope").load_extension("zf-native")
+vim.keymap.set('n', '<leader>of', function()
+  require 'telescope'.extensions.frecency.frecency({
+    path_display = { shorten = 4, 'absolute' },
+    sorter = require 'telescope.config'.values.file_sorter(),
+  })
+end)
+require("telescope").load_extension "file_browser"
