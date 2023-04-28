@@ -1,60 +1,72 @@
 require('adaptive')
-P = require('neopm')
-
-P 'nvim-lua/plenary.nvim'
-P 'https://github.com/nvim-lualine/lualine.nvim'
--- P 'https://github.com/vale1410/vim-minizinc'
-P 'https://github.com/numToStr/Comment.nvim'
-P 'https://github.com/kylechui/nvim-surround'
-P 'norcalli/nvim-colorizer.lua'
-P 'https://github.com/neovim/nvim-lspconfig'
-P 'https://github.com/romainl/vim-cool'
-P '~/Repositories/iswap.nvim'
-P 'https://github.com/nvim-treesitter/nvim-treesitter'
-P 'https://github.com/nvim-telescope/telescope.nvim'
-P 'https://github.com/tpope/vim-fugitive'
-P 'https://github.com/nvim-treesitter/nvim-treesitter-context'
-P 'https://github.com/lewis6991/gitsigns.nvim'
--- P 'https://github.com/glepnir/lspsaga.nvim'
-P 'https://github.com/pechorin/any-jump.vim'
-P '~/Code/longbow.nvim'
-P 'https://github.com/nvim-treesitter/playground'
-P 'https://github.com/folke/neodev.nvim'
-P 'https://github.com/rose-pine/neovim'
-P 'https://github.com/stevearc/dressing.nvim'
-P 'https://github.com/hrsh7th/nvim-cmp'
-P 'hrsh7th/cmp-nvim-lsp'
-P 'https://github.com/hrsh7th/cmp-nvim-lsp-signature-help'
-P 'nvim-telescope/telescope-frecency.nvim'
-P 'tami5/sqlite.lua'
--- P 'https://github.com/JuliaEditorSupport/julia-vim'
--- P 'https://github.com/Nymphium/vim-koka'
-P 'lervag/vimtex'
-P 'https://github.com/folke/zen-mode.nvim'
-P 'https://github.com/MrcJkb/haskell-tools.nvim'
-P 'https://github.com/itchyny/vim-haskell-indent'
-P 'https://github.com/L3MON4D3/LuaSnip'
--- P 'https://github.com/vim-scripts/alex.vim'
--- P 'https://github.com/romgrk/kirby.nvim'
-P 'romgrk/fzy-lua-native' -- needs 'make install'
-P 'nvim-tree/nvim-web-devicons'
--- P 'romgrk/kui.nvim'
-P 'kevinhwang91/nvim-ufo'
-P 'kevinhwang91/promise-async'
-P 'https://github.com/hrsh7th/cmp-buffer'
-P 'https://github.com/stevearc/oil.nvim'
-P 'https://github.com/nvim-telescope/telescope-file-browser.nvim'
-P 'https://github.com/junegunn/vim-easy-align'
-P 'ruifm/gitlinker.nvim'
-P 'kaarmu/typst.vim'
--- P 'icedman/nvim-textmate'
-P 'https://github.com/ziglang/zig.vim'
-P 'https://github.com/dhruvasagar/vim-table-mode'
-P 'https://github.com/smjonas/inc-rename.nvim'
-P 'https://github.com/natecraddock/telescope-zf-native.nvim'
-
-P.autoinstall(true)
-P.load()
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+require("lazy").setup{
+  'nvim-lua/plenary.nvim',
+  'https://github.com/nvim-lualine/lualine.nvim',
+   --'https://github.com/vale1410/vim-minizinc',
+  'https://github.com/numToStr/Comment.nvim',
+  'https://github.com/kylechui/nvim-surround',
+  'norcalli/nvim-colorizer.lua',
+  'https://github.com/neovim/nvim-lspconfig',
+  'https://github.com/romainl/vim-cool',
+  { dir = '~/Repositories/iswap.nvim' },
+  'https://github.com/nvim-treesitter/nvim-treesitter',
+  'https://github.com/nvim-telescope/telescope.nvim',
+  'https://github.com/tpope/vim-fugitive',
+  'https://github.com/nvim-treesitter/nvim-treesitter-context',
+  'https://github.com/lewis6991/gitsigns.nvim',
+   --'https://github.com/glepnir/lspsaga.nvim',
+  'https://github.com/pechorin/any-jump.vim',
+  { dir = '~/Code/longbow.nvim' },
+  'https://github.com/nvim-treesitter/playground',
+  'https://github.com/folke/neodev.nvim',
+  'https://github.com/rose-pine/neovim',
+  'https://github.com/stevearc/dressing.nvim',
+  'https://github.com/hrsh7th/nvim-cmp',
+  'hrsh7th/cmp-nvim-lsp',
+  'https://github.com/hrsh7th/cmp-nvim-lsp-signature-help',
+  'nvim-telescope/telescope-frecency.nvim',
+  'tami5/sqlite.lua',
+   --'https://github.com/JuliaEditorSupport/julia-vim',
+   --'https://github.com/Nymphium/vim-koka',
+  'lervag/vimtex',
+  'https://github.com/folke/zen-mode.nvim',
+  'https://github.com/MrcJkb/haskell-tools.nvim',
+  'https://github.com/itchyny/vim-haskell-indent',
+  'https://github.com/L3MON4D3/LuaSnip',
+   --'https://github.com/vim-scripts/alex.vim',
+   --'https://github.com/romgrk/kirby.nvim',
+  'romgrk/fzy-lua-native', -- needs 'make install'
+  'nvim-tree/nvim-web-devicons',
+   --'romgrk/kui.nvim',
+  'kevinhwang91/nvim-ufo',
+  'kevinhwang91/promise-async',
+  'https://github.com/hrsh7th/cmp-buffer',
+  'https://github.com/stevearc/oil.nvim',
+  'https://github.com/nvim-telescope/telescope-file-browser.nvim',
+  'https://github.com/junegunn/vim-easy-align',
+  'ruifm/gitlinker.nvim',
+  'kaarmu/typst.vim',
+   -- 'icedman/nvim-textmate',
+  'https://github.com/ziglang/zig.vim',
+  'https://github.com/dhruvasagar/vim-table-mode',
+  'https://github.com/smjonas/inc-rename.nvim',
+  'https://github.com/natecraddock/telescope-zf-native.nvim',
+  'https://github.com/ii14/neorepl.nvim',
+  'goolord/alpha-nvim',
+  'https://github.com/MaximilianLloyd/ascii.nvim',
+}
 
 vim.cmd [[
 xmap ga <Plug>(EasyAlign)
@@ -69,6 +81,7 @@ vim.g.vimtex_view_sioyek_exe = '/Applications/sioyek.app/Contents/MacOS/sioyek'
 vim.g.mapleader = ' '
 vim.opt.cmdheight = 1
 vim.opt.laststatus = 3
+vim.opt.cmdheight = 0
 
 vim.opt.splitright = true
 vim.opt.splitbelow = true
@@ -132,8 +145,6 @@ local opts = { noremap = true, silent = true }
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 
--- local capabilities = vim.lsp.protocol.make_client_capabilities()
-
 local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
@@ -178,10 +189,6 @@ require('lspconfig')['pyright'].setup {
   on_attach = on_attach,
   cmd = { "pyright-langserver", "--stdio", "-v", "/Users/ml/GlobalVenv" }
 }
--- require('lspconfig')['hls'].setup {
---   on_attach = on_attach,
---   filetypes = { 'haskell', 'lhaskell', 'cabal' },
--- }
 
 require('lspconfig')['lua_ls'].setup {
   on_attach = on_attach,
@@ -229,7 +236,7 @@ require('lspconfig')['cssls'].setup {
 require('lspconfig')['typst_lsp'].setup {
   on_attach = on_attach,
   settings = {
-    exportPdf = "onType",
+    exportPdf = "onSave",
   }
 }
 
@@ -246,10 +253,6 @@ vim.g.python3_host_prog = '~/GlobalVenv/bin/python3.9'
 require('nvim-treesitter.configs').setup {
   highlight = { enable = true }
 }
-
--- require('treesitter-context').setup{
---   enable = true
--- }
 
 local function nc(keys, cmd)
   vim.keymap.set("n", "<leader>" .. keys, "<cmd>" .. cmd .. "<cr>")
@@ -431,10 +434,112 @@ au ColorScheme * hi! link NonText WinSeparator
 
 require "telescope".load_extension("frecency")
 require("telescope").load_extension("zf-native")
-vim.keymap.set('n', '<leader>of', function()
-  require 'telescope'.extensions.frecency.frecency({
-    path_display = { shorten = 4, 'absolute' },
+local themes = require('telescope.themes')
+vim.api.nvim_create_user_command('Recent', function()
+  local Path = require "plenary.path"
+  local os_home = vim.loop.os_homedir()
+  require 'telescope'.extensions.frecency.frecency(themes.get_dropdown({
+    path_display = function(path_opts, filename)
+      if vim.startswith(filename, os_home) then
+        filename = "~/" .. Path:new(filename):make_relative(os_home)
+      end
+      return filename
+    end,
     sorter = require 'telescope.config'.values.file_sorter(),
-  })
-end)
+  }))
+end, {})
 require("telescope").load_extension "file_browser"
+
+local alpha = require("alpha")
+local dashboard = require("alpha.themes.dashboard")
+
+-- Set header
+dashboard.section.header.val = {
+  [[                                                                       ]],
+  [[                                                                     ]],
+  [[       ████ ██████           █████      ██                     ]],
+  [[      ███████████             █████                             ]],
+  [[      █████████ ███████████████████ ███   ███████████   ]],
+  [[     █████████  ███    █████████████ █████ ██████████████   ]],
+  [[    █████████ ██████████ █████████ █████ █████ ████ █████   ]],
+  [[  ███████████ ███    ███ █████████ █████ █████ ████ █████  ]],
+  [[ ██████  █████████████████████ ████ █████ █████ ████ ██████ ]],
+  [[                                                                       ]],
+}
+
+dashboard.section.header.val = {
+  "                                   ",
+  "   ⣴⣶⣤⡤⠦⣤⣀⣤⠆     ⣈⣭⣿⣶⣿⣦⣼⣆          ",
+  "    ⠉⠻⢿⣿⠿⣿⣿⣶⣦⠤⠄⡠⢾⣿⣿⡿⠋⠉⠉⠻⣿⣿⡛⣦       ",
+  "          ⠈⢿⣿⣟⠦ ⣾⣿⣿⣷    ⠻⠿⢿⣿⣧⣄     ",
+  "           ⣸⣿⣿⢧ ⢻⠻⣿⣿⣷⣄⣀⠄⠢⣀⡀⠈⠙⠿⠄    ",
+  "          ⢠⣿⣿⣿⠈    ⣻⣿⣿⣿⣿⣿⣿⣿⣛⣳⣤⣀⣀   ",
+  "   ⢠⣧⣶⣥⡤⢄ ⣸⣿⣿⠘  ⢀⣴⣿⣿⡿⠛⣿⣿⣧⠈⢿⠿⠟⠛⠻⠿⠄  ",
+  "  ⣰⣿⣿⠛⠻⣿⣿⡦⢹⣿⣷   ⢊⣿⣿⡏  ⢸⣿⣿⡇ ⢀⣠⣄⣾⠄   ",
+  " ⣠⣿⠿⠛ ⢀⣿⣿⣷⠘⢿⣿⣦⡀ ⢸⢿⣿⣿⣄ ⣸⣿⣿⡇⣪⣿⡿⠿⣿⣷⡄  ",
+  " ⠙⠃   ⣼⣿⡟  ⠈⠻⣿⣿⣦⣌⡇⠻⣿⣿⣷⣿⣿⣿ ⣿⣿⡇ ⠛⠻⢷⣄ ",
+  "      ⢻⣿⣿⣄   ⠈⠻⣿⣿⣿⣷⣿⣿⣿⣿⣿⡟ ⠫⢿⣿⡆     ",
+  "       ⠻⣿⣿⣿⣿⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⡟⢀⣀⣤⣾⡿⠃     ",
+  "                                   ",
+  "            N E O V I M            ",
+}
+
+dashboard.section.header.opts.hl = 'Tag'
+
+local leader = "SPC"
+local function button(sc, txt, keybind, keybind_opts)
+  local sc_ = sc:gsub("%s", ""):gsub(leader, "<leader>")
+
+  local opts = {
+    position = "center",
+    shortcut = sc,
+    cursor = 4,
+    width = 30,
+    align_shortcut = "right",
+    hl_shortcut = "LineNr",
+    hl = {
+        { 'DiffText', 0, 5 }, -- highlight the icon glyph
+        { 'PmenuSel', 6, 17 }, -- highlight the part after the icon glyph
+    },
+  }
+  if keybind then
+    keybind_opts = keybind_opts or { noremap = true, silent = true, nowait = true }
+    opts.keymap = { "n", sc_, keybind, keybind_opts }
+  end
+
+  local function on_press()
+    local key = vim.api.nvim_replace_termcodes(keybind or sc_ .. "<Ignore>", true, false, true)
+    vim.api.nvim_feedkeys(key, "t", false)
+  end
+
+  return {
+    type = "button",
+    val = txt,
+    on_press = on_press,
+    opts = opts,
+  }
+end
+
+-- Set menu
+dashboard.section.buttons.val = {
+  button("SPC o f", "    recents", ":Recent<CR>"),
+  button("e",       "    new-file", ":ene <BAR> startinsert <CR>"),
+  button("SPC o o", "    find-file", ":Telescope oldfiles theme=dropdown<CR>"),
+}
+
+dashboard.section.buttons.opts = {
+  spacing = 0,
+}
+
+alpha.setup(dashboard.opts)
+
+vim.cmd([[
+    autocmd FileType alpha setlocal nofoldenable
+]])
+
+vim.cmd[[
+augroup highlight_yank
+  autocmd!
+  autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank("IncSearch", 1000)
+augroup END
+]]
