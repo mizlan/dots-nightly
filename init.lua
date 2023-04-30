@@ -65,7 +65,6 @@ require("lazy").setup{
   'https://github.com/natecraddock/telescope-zf-native.nvim',
   'https://github.com/ii14/neorepl.nvim',
   'goolord/alpha-nvim',
-  'https://github.com/MaximilianLloyd/ascii.nvim',
 }
 
 vim.cmd [[
@@ -494,10 +493,10 @@ local function button(sc, txt, keybind, keybind_opts)
     cursor = 4,
     width = 30,
     align_shortcut = "right",
-    hl_shortcut = "LineNr",
+    hl_shortcut = "WinSeparator",
     hl = {
-        { 'DiffText', 0, 5 }, -- highlight the icon glyph
-        { 'PmenuSel', 6, 17 }, -- highlight the part after the icon glyph
+        { 'Boolean', 0, 5 }, -- highlight the icon glyph
+        { 'LineNr', 6, 17 }, -- highlight the part after the icon glyph
     },
   }
   if keybind then
@@ -521,8 +520,10 @@ end
 -- Set menu
 dashboard.section.buttons.val = {
   button("SPC o f", "    recents", ":Recent<CR>"),
-  button("e",       "    new-file", ":ene <BAR> startinsert <CR>"),
-  button("SPC o o", "    find-file", ":Telescope oldfiles theme=dropdown<CR>"),
+  button("SPC .  ", "    browse", ":Telescope file_browser<CR>"),
+  button("SPC g g", "    git", ":tab Git<CR>"),
+  button("e      ", "    new-file", ":ene <BAR> startinsert <CR>"),
+  button("SPC o o", "    oldfiles", ":Telescope oldfiles theme=dropdown<CR>"),
 }
 
 dashboard.section.buttons.opts = {
